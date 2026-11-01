@@ -1,4 +1,30 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+:root {
+  font-family: Inter, 'Segoe UI', Arial, sans-serif;
+  color: #1d2940;
+  background: #f5f7fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-weight: 400;
 }
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: #f5f7fb; }
+a { color: #3157c8; }
+
+.site-header { background: rgba(255, 255, 255, .94) !important; color: #1d2940 !important; border-bottom: 1px solid #e8ecf3; backdrop-filter: blur(12px); }
+.brand-dot { color: #5279e5; }
+.nav-link { min-width: auto !important; border-radius: 9px !important; }
+.nav-link.active { background: #eef2ff !important; color: #3157c8 !important; }
+.hero-card, .content-card, .form-card { border: 1px solid #e8ecf3; border-radius: 20px !important; box-shadow: 0 12px 35px rgba(31, 48, 85, .06) !important; }
+.hero-card { position: relative; overflow: hidden; background: linear-gradient(115deg, #fff 52%, #eef3ff 100%) !important; }
+.hero-mark { position: absolute; right: 7%; top: 50%; transform: translateY(-50%); color: rgba(76, 111, 214, .13); font-size: clamp(130px, 25vw, 290px); line-height: 1; }
+.feature-card { border: 1px solid #e8ecf3; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(31, 48, 85, .035) !important; }
+.page-enter { animation: page-enter .35s ease-out both; }
+.result-enter { animation: result-enter .25s ease-out both; }
+@keyframes page-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes result-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 480px) { .site-header .MuiToolbar-root { justify-content: center; padding-block: 8px; } .site-header .MuiTypography-root { text-align: center; flex-basis: 100%; } .hero-mark { right: -15%; opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }

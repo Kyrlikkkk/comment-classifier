@@ -1,136 +1,79 @@
-import { Button, Card, Container, Dialog, DialogActions, DialogContent, DialogTitle, Typography, Chip } from "@mui/material"
-import { useState } from "react"
+import { useState } from 'react'
+import { Alert, Box, Button, Card, Chip, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Typography } from '@mui/material'
+import { Link, useNavigate } from 'react-router-dom'
+import { getCommentHistory, type CommentAnalysis } from '../entities/comment/model'
+import { CURRENT_USER_KEY, getCurrentUser } from '../entities/user/model'
+
+function formatDate(value: string): string {
+  return new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+}
+
+function CommentCard({ item }: { item: CommentAnalysis }) {
+  const positive = item.sentiment === 'positive'
+  return <Card variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+    <Typography sx={{ mb: 1 }}>{item.text}</Typography>
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Chip label={positive ? 'Положительный' : 'Отрицательный'} color={positive ? 'success' : 'error'} size="small" />
+      <Typography variant="caption" color="text.secondary">{formatDate(item.createdAt)}</Typography>
+    </Box>
+  </Card>
+}
 
 function ProfilePage() {
-    const [showHistory, setShowHistory] = useState(false)
-    return (
-        <Container sx={{ py: 4 }}>
-            <Card sx={{ p: { xs: 2, sm: 4 } }}>
-                <Typography variant="h3" sx={{
-                            mb: 3,
-                            fontSize: {
-                                xs: "2rem",
-                                sm: "3rem"
-                            }
-                        }}>
-                    👤 Личный кабинет 👤
-                </Typography>
+  const navigate = useNavigate()
+  const [showHistory, setShowHistory] = useState(false)
+  const [user] = useState(getCurrentUser)
+  const [history] = useState(getCommentHistory)
 
-                <Typography variant="h5" sx={{
-                            fontSize: {
-                                xs: "1.3rem",
-                                sm: "1.5rem"
-                            }
-                        }}>
-                        Имя пользователя
-                </Typography>
+  function handleLogout() {
+    localStorage.removeItem(CURRENT_USER_KEY)
+    navigate('/login')
+  }
 
-                <Typography>
-                    user@example.com
-                </Typography>
-
-                <Typography variant="h5"  sx={{
-                            mt: 3,
-                            fontSize: {
-                                xs: "1.3rem",
-                                sm: "1.5rem"
-                            }
-                        }}>
-                    Последние запросы
-                </Typography>
-
-                <Typography>
-                    «Отличный товар, мне всё понравилось!»
-                </Typography>
-
-                <Typography>
-                    Положительный
-                </Typography>
-
-                <Typography>
-                    «Очень плохое качество товара.»
-                </Typography>
-
-                <Typography>
-                    Отрицательный
-                </Typography>
-
-                <Button
-                    variant="contained"
-                    onClick={() => setShowHistory(true)}
-                >
-                    Посмотреть всю историю
-                </Button>
-                <Dialog
-                    open={showHistory}
-                    onClose={() => setShowHistory(false)}
-                    fullWidth
-                    maxWidth="sm"
-                >
-                    <DialogTitle>
-                        История запросов
-                    </DialogTitle>
-
-                    <DialogContent dividers>
-                        <Card sx={{ mb: 2, p: 2 }}>
-                            <Typography variant="body2">
-                                27.09.2026
-                            </Typography>
-
-                            <Typography sx={{ mt: 1 }}>
-                                «Очень хороший товар, мне всё понравилось!»
-                            </Typography>
-
-                            <Chip
-                                label="Положительный"
-                                color="success"
-                                sx={{ mt: 2 }}
-                            />
-                        </Card>
-
-                        <Card sx={{ mb: 2, p: 2 }}>
-                            <Typography variant="body2">
-                                26.09.2026
-                            </Typography>
-
-                            <Typography sx={{ mt: 1 }}>
-                                «Качество ужасное, больше покупать не буду.»
-                            </Typography>
-
-                            <Chip
-                                label="Отрицательный"
-                                color="error"
-                                sx={{ mt: 2 }}
-                            />
-                        </Card>
-
-                        <Card sx={{ mb: 2, p: 2 }}>
-                            <Typography variant="body2">
-                                25.09.2026
-                            </Typography>
-
-                            <Typography sx={{ mt: 1 }}>
-                                «Всё пришло вовремя, спасибо!»
-                            </Typography>
-
-                            <Chip
-                                label="Положительный"
-                                color="success"
-                                sx={{ mt: 2 }}
-                            />
-                        </Card>
-
-                    </DialogContent>
-
-                    <DialogActions>
-                        <Button onClick={() => setShowHistory(false)}>
-                            Закрыть
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </Card>
-        </Container>
-    )
+  return (
+    <Container maxWidth="md" className="page-enter" sx={{ py: { xs: 4, sm: 7 } }}>
+      <Card className="content-card" sx={{ overflow: 'hidden' }}>
+        <Box sx={{ p: { xs: 3, sm: 4 }, color: 'white', background: 'linear-gradient(120deg, #3157c8, #5279e5)' }}>
+          <Typography variant="overline" sx={{ opacity: 0.8 }}>Ваш аккаунт</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>Личный кабинет</Typography>
+        </Box>
+        <Box sx={{ p: { xs: 3, sm: 4 } }}>
+          {!user ? <Alert severity="info" action={<Button component={Link} to="/login" color="inherit">Войти</Button>}>
+            Чтобы посмотреть профиль, войдите в аккаунт.
+          </Alert> : <>
+            <Typography variant="h6" sx={{ mb: 2 }}>Данные пользователя</Typography>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 4 }}>
+              <Card variant="outlined" sx={{ p: 2.5, flex: 1, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary">Имя пользователя</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{user.username}</Typography>
+              </Card>
+              <Card variant="outlined" sx={{ p: 2.5, flex: 1, borderRadius: 2 }}>
+                <Typography variant="caption" color="text.secondary">Электронная почта</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{user.email}</Typography>
+              </Card>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">Последние запросы</Typography>
+              <Chip label={`${history.length} всего`} variant="outlined" />
+            </Box>
+            {history.length === 0 ? <Alert severity="info">История пока пуста. Попробуйте проанализировать комментарий.</Alert> :
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>{history.slice(0, 2).map(item => <CommentCard key={item.id} item={item} />)}</Box>}
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5, mt: 3 }}>
+              <Button component={Link} to="/classifier" variant="contained">Новый анализ</Button>
+              <Button variant="outlined" onClick={() => setShowHistory(true)} disabled={history.length === 0}>Вся история</Button>
+              <Button color="inherit" onClick={handleLogout} sx={{ ml: { sm: 'auto' } }}>Выйти</Button>
+            </Box>
+          </>}
+        </Box>
+      </Card>
+      <Dialog open={showHistory} onClose={() => setShowHistory(false)} fullWidth maxWidth="sm">
+        <DialogTitle>История запросов</DialogTitle>
+        <DialogContent dividers><Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>{history.map(item => <CommentCard key={item.id} item={item} />)}</Box></DialogContent>
+        <DialogActions><Button onClick={() => setShowHistory(false)}>Закрыть</Button></DialogActions>
+      </Dialog>
+    </Container>
+  )
 }
 
 export default ProfilePage

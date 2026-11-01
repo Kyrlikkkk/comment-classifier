@@ -18,8 +18,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(
         Integer,
-        primary_key=True,
-        index=True,
+        primary_key=True
     )
     username: Mapped[str] = mapped_column(
         String(50),
@@ -29,8 +28,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(
         String(255),
         unique=True,
-        index=True,
-        nullable=False,
+        nullable=False
     )
     hashed_password: Mapped[str] = mapped_column(
         String(255),
@@ -48,8 +46,7 @@ class Comment(Base):
 
     id: Mapped[int] = mapped_column(
         Integer,
-        primary_key=True,
-        index=True,
+        primary_key=True
     )
     text: Mapped[str] = mapped_column(
         Text,
